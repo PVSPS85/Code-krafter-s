@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+{% block title %}Timer & Alarm{% endblock %}
+{% block page_title %}Timer & Alarm{% endblock %}
+{% block content %}
+
+<style>
+.tools-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 20px;
+}
+.tool-card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center;
+}
+.tool-card h3 {
+    margin: 0 0 20px 0;
+    color: #2d3748;
+    font-size: 1.4em;
+}
+.big-clock {
+    font-size: 4.5em;
+    font-weight: 700;
+    color: #2c7a7b;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+.timer-display {
+    font-size: 3.5em;
+    font-weight: 700;
+    color: #2c7a7b;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+}
+.control-btn {
+    padding: 12px 28px;
+    margin: 6px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-start {
+    background: #38a169;
+    color: white;
+}
+.btn-start:hover {
+    background: #2f855a;
+}
+.btn-pause {
+    background: #ed8936;
+    color: white;
+}
+.btn-pause:hover {
+    background: #dd6b20;
+}
+.btn-reset {
+    background: #e53e3e;
+    color: white;
+}
+.btn-reset:hover {
+    background: #c53030;
+}
+.timer-input {
+    width: 70px;
+    padding: 10px;
+    font-size: 18px;
+    border: 2px solid #cbd5e0;
+    border-radius: 8px;
+    text-align: center;
+    margin: 0 4px;
+}
+.alarm-input {
+    padding: 10px 14px;
+    font-size: 16px;
+    border: 2px solid #cbd5e0;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+.alarm-list {
+    margin-top: 16px;
+    text-align: left;
+}
+.alarm-item {
+    background: #edf2f7;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.delete-alarm {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.delete-alarm:hover {
+    background: #c53030;
+}
+</style>
+
+<div class="page-container">
+    <div class="page-header">
+        <h2>⏰ Timer & Alarm Tools</h2>
+        <p>Manage your time with clock, stopwatch, timer, and alarms</p>
+    </div>
+
+    <div class="tools-container">
+        <!-- Live Clock -->
+        <div class="tool-card">
+            <h3>🕐 Live Clock</h3>
+            <div class="big-clock" id="liveClock">00:00:00</div>
+            <p style="color: #718096; margin-top: 10px;" id="dateDisplay">Loading...</p>
+        </div>
+
+        <!-- Stopwatch -->
+        <div class="tool-card">
+            <h3>⏱️ Stopwatch</h3>
+            <div class="timer-display" id="stopwatchDisplay">00:00:00</div>
+            <button class="control-btn btn-start" onclick="startStopwatch()">▶️ Start</button>
+            <button class="control-btn btn-pause" onclick="pauseStopwatch()">⏸️ Pause</button>
+            <button class="control-btn btn-reset" onclick="resetStopwatch()">🔄 Reset</button>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div class="tool-card">
+            <h3>⏲️ Countdown Timer</h3>
+            <div>
+                <input type="number" class="timer-input" id="timerHours" placeholder="HH" min="0" max="23" value="0">
+                <span style="font-size: 1.5em;">:</span>
+                <input type="number" class="timer-input" id="timerMinutes" placeholder="MM" min="0" max="59" value="5">
+                <span style="font-size: 1.5em;">:</span>
+                <input type="number" class="timer-input" id="timerSeconds" placeholder="SS" min="0" max="59" value="0">
+            </div>
+            <div class="timer-display" id="timerDisplay">05:00</div>
+            <button class="control-btn btn-start" onclick="startTimer()">▶️ Start</button>
+            <button class="control-btn btn-pause" onclick="pauseTimer()">⏸️ Pause</button>
+            <button class="control-btn btn-reset" onclick="resetTimer()">🔄 Reset</button>
+        </div>
+
+        <!-- Alarm Clock -->
+        <div class="tool-card">
+            <h3>⏰ Alarm Clock</h3>
+            <input type="time" class="alarm-input" id="alarmTime">
+            <br>
+            <button class="control-btn btn-start" onclick="setAlarm()">➕ Set Alarm</button>
+            <div class="alarm-list" id="alarmList"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Live Clock
+function updateClock() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('liveClock').textContent = `${hours}:${minutes}:${seconds}`;
+    
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-US', options);
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// Stopwatch
+let stopwatchInterval = null;
+let stopwatchTime = 0;
+let stopwatchRunning = false;
+
+function startStopwatch() {
+    if (!stopwatchRunning) {
+        stopwatchRunning = true;
+        stopwatchInterval = setInterval(() => {
+            stopwatchTime++;
+            displayStopwatch();
+        }, 1000);
+    }
+}
+
+function pauseStopwatch() {
+    stopwatchRunning = false;
+    clearInterval(stopwatchInterval);
+}
+
+function resetStopwatch() {
+    pauseStopwatch();
+    stopwatchTime = 0;
+    displayStopwatch();
+}
+
+function displayStopwatch() {
+    const hours = Math.floor(stopwatchTime / 3600);
+    const minutes = Math.floor((stopwatchTime % 3600) / 60);
+    const seconds = stopwatchTime % 60;
+    document.getElementById('stopwatchDisplay').textContent = 
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+// Countdown Timer
+let timerInterval = null;
+let timerRemaining = 0;
+let timerRunning = false;
+
+function startTimer() {
+    if (!timerRunning) {
+        if (timerRemaining === 0) {
+            const hours = parseInt(document.getElementById('timerHours').value) || 0;
+            const minutes = parseInt(document.getElementById('timerMinutes').value) || 0;
+            const seconds = parseInt(document.getElementById('timerSeconds').value) || 0;
+            timerRemaining = hours * 3600 + minutes * 60 + seconds;
+        }
+        
+        if (timerRemaining > 0) {
+            timerRunning = true;
+            timerInterval = setInterval(() => {
+                timerRemaining--;
+                displayTimer();
+                if (timerRemaining <= 0) {
+                    pauseTimer();
+                    alert('⏰ Timer finished!');
+                    playSound();
+                }
+            }, 1000);
+        }
+    }
+}
+
+function pauseTimer() {
+    timerRunning = false;
+    clearInterval(timerInterval);
+}
+
+function resetTimer() {
+    pauseTimer();
+    timerRemaining = 0;
+    displayTimer();
+}
+
+function displayTimer() {
+    const hours = Math.floor(timerRemaining / 3600);
+    const minutes = Math.floor((timerRemaining % 3600) / 60);
+    const seconds = timerRemaining % 60;
+    document.getElementById('timerDisplay').textContent = 
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+// Alarm Clock
+let alarms = JSON.parse(localStorage.getItem('alarms')) || [];
+
+function setAlarm() {
+    const time = document.getElementById('alarmTime').value;
+    if (time) {
+        alarms.push(time);
+        localStorage.setItem('alarms', JSON.stringify(alarms));
+        document.getElementById('alarmTime').value = '';
+        displayAlarms();
+    } else {
+        alert('Please select a time for the alarm');
+    }
+}
+
+function deleteAlarm(index) {
+    alarms.splice(index, 1);
+    localStorage.setItem('alarms', JSON.stringify(alarms));
+    displayAlarms();
+}
+
+function displayAlarms() {
+    const list = document.getElementById('alarmList');
+    list.innerHTML = '';
+    alarms.forEach((time, index) => {
+        const item = document.createElement('div');
+        item.className = 'alarm-item';
+        item.innerHTML = `
+            <span style="font-weight: 600; font-size: 1.1em;">🔔 ${time}</span>
+            <button class="delete-alarm" onclick="deleteAlarm(${index})">Delete</button>
+        `;
+        list.appendChild(item);
+    });
+}
+
+function checkAlarms() {
+    const now = new Date();
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    alarms.forEach(alarm => {
+        if (alarm === currentTime) {
+            alert(`⏰ ALARM! It's ${alarm}`);
+            playSound();
+        }
+    });
+}
+
+function playSound() {
+    // Simple beep using Web Audio API
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    oscillator.frequency.value = 800;
+    oscillator.connect(audioContext.destination);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.3);
+}
+
+setInterval(checkAlarms, 60000); // Check alarms every minute
+displayAlarms();
+displayTimer();
+</script>
+
+{% endblock %}

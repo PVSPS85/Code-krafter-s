@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CreazyAI{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    {% if 'user' in session %}
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>📚 CreazyAI</h2>
+        </div>
+        
+        <div class="sidebar-content">
+            <a href="/dashboard" class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                <i class="fas fa-home"></i> <span>Dashboard</span>
+            </a>
+            
+
+
+            
+            <div class="nav-section">
+                <h3 class="section-title">AI Study Tools</h3>
+                <a href="/summarizer" class="nav-item {% if request.endpoint == 'summarizer' %}active{% endif %}">
+                    <i class="fas fa-file-alt"></i> <span>Note Summarizer</span>
+                </a>
+                <a href="/flashcards" class="nav-item {% if request.endpoint == 'flashcards' %}active{% endif %}">
+                    <i class="fas fa-layer-group"></i> <span>Flashcards</span>
+                </a>
+                <a href="/key-terms" class="nav-item {% if request.endpoint == 'key_terms' %}active{% endif %}">
+                    <i class="fas fa-key"></i> <span>Key Terms</span>
+                </a>
+                                <a href="/chatbot" class="nav-item {% if request.endpoint == 'chatbot' %}active{% endif %}">
+                    <i class="fas fa-robot"></i> <span>AI Assistant</span>
+                </a>
+                
+
+
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="section-title">Productivity</h3>
+                <a href="/timetable" class="nav-item {% if request.endpoint == 'timetable' %}active{% endif %}">
+                    <i class="fas fa-calendar-alt"></i> <span>Timetable</span>
+                </a>
+                <a href="{{ url_for('calendar') }}" class="nav-item {% if request.endpoint == 'calendar' %}active{% endif %}">
+                    <i class="fas fa-calendar-alt"></i> <span>Calendar</span>
+                </a>
+
+                <a href="/todo" class="nav-item {% if request.endpoint == 'todo' %}active{% endif %}">
+                    <i class="fas fa-check-square"></i> <span>To-Do List</span>
+                </a>
+                <a href="{{ url_for('timer') }}" class="nav-item {% if request.endpoint == 'timer' %}active{% endif %}">
+                    <i class="fas fa-clock"></i> <span>Timer & Alarm</span>
+                </a>
+                <a href="{{ url_for('music') }}" class="nav-item {% if request.endpoint == 'music' %}active{% endif %}">
+                    <i class="fas fa-music"></i> <span>Focus Music</span>
+                </a>
+                <a href="{{ url_for('files') }}" class="nav-item {% if request.endpoint == 'files' %}active{% endif %}">
+                    <i class="fas fa-folder-open"></i> <span>Resources</span>
+                </a>
+                <a href="{{ url_for('quiz') }}" class="nav-item {% if request.endpoint == 'quiz' %}active{% endif %}">
+                    <i class="fas fa-question-circle"></i> <span>Quiz Yourself</span>
+                </a>
+
+
+
+
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="section-title">Analytics</h3>
+                <a href="/statistics" class="nav-item {% if request.endpoint == 'statistics' %}active{% endif %}">
+                    <i class="fas fa-chart-bar"></i> <span>Statistics</span>
+                </a>
+                <a href="{{ url_for('leaderboard') }}" class="nav-item {% if request.endpoint == 'leaderboard' %}active{% endif %}">
+                     <i class="fas fa-trophy"></i> <span>Leaderboard</span>
+                </a>
+
+
+                
+            </div>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="/settings" class="nav-item">
+                <i class="fas fa-cog"></i> <span>Settings</span>
+            </a>
+            <a href="/logout" class="nav-item logout">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </a>
+            
+            <label class="nav-item" style="gap:8px;cursor:pointer;">
+                    <i class="fas fa-moon"></i>
+                <input type="checkbox" id="themeToggle" style="margin-right:6px;"> Dark Mode
+            </label>
+
+
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <nav class="topbar">
+            <div class="topbar-left">
+                <h1 class="page-title">{% block page_title %}CreazyAI{% endblock %}</h1>
+            </div>
+            <div class="topbar-right">
+                <div class="user-profile">
+                    <span>{{ session.get('user', 'User') }}</span>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    {% else %}
+    {% block standalone_content %}{% endblock %}
+    {% endif %}
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+<script>
+document.getElementById('themeToggle').addEventListener('change', function() {
+    if(this.checked){
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+    }
+});
+window.addEventListener('DOMContentLoaded', ()=>{
+    const saved = localStorage.getItem('theme');
+    if(saved === 'dark'){
+        document.getElementById('themeToggle').checked = true;
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+});
+</script>
+
+</body>
+</html>

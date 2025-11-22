@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}To-Do List - CreazyAI{% endblock %}
+{% block page_title %}To-Do List{% endblock %}
+
+{% block content %}
+<div class="todo-page">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">My Tasks</h3>
+        </div>
+        <div class="card-body">
+            <div class="todo-input">
+                <input type="text" id="taskInput" class="form-control" placeholder="Add a new task...">
+                <button onclick="addTask()" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add
+                </button>
+            </div>
+            
+            <div class="todo-list" id="todoList">
+                <div class="todo-item">
+                    <input type="checkbox" id="task1">
+                    <label for="task1">Complete Math assignment</label>
+                    <button class="delete-btn" onclick="deleteTask(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                
+                <div class="todo-item">
+                    <input type="checkbox" id="task2">
+                    <label for="task2">Study for Physics exam</label>
+                    <button class="delete-btn" onclick="deleteTask(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                
+                <div class="todo-item">
+                    <input type="checkbox" id="task3">
+                    <label for="task3">Review Chemistry notes</label>
+                    <button class="delete-btn" onclick="deleteTask(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let taskCounter = 4;
+
+function addTask() {
+    const input = document.getElementById('taskInput');
+    const taskText = input.value.trim();
+    
+    if (taskText) {
+        const todoList = document.getElementById('todoList');
+        const taskId = 'task' + taskCounter++;
+        
+        const todoItem = document.createElement('div');
+        todoItem.className = 'todo-item';
+        todoItem.innerHTML = `
+            <input type="checkbox" id="${taskId}">
+            <label for="${taskId}">${taskText}</label>
+            <button class="delete-btn" onclick="deleteTask(this)">
+                <i class="fas fa-trash"></i>
+            </button>
+        `;
+        
+        todoList.appendChild(todoItem);
+        input.value = '';
+    }
+}
+
+function deleteTask(btn) {
+    btn.parentElement.remove();
+}
+
+document.getElementById('taskInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        addTask();
+    }
+});
+</script>
+{% endblock %}

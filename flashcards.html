@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Flashcards - CreazyAI{% endblock %}
+{% block page_title %}Flashcard Generator{% endblock %}
+
+{% block content %}
+<div class="flashcards-page">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Generate Flashcards</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="text">Paste Your Study Material</label>
+                    <textarea id="text" name="text" class="form-control" rows="8" placeholder="Paste your notes, textbook content, or any study material here..." required></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-magic"></i> Generate Flashcards
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    {% if flashcards %}
+    <div class="flashcards-container mt-3">
+        <h3>Your Flashcards ({{ flashcards|length }})</h3>
+        
+        <div class="flashcard-controls">
+            <button onclick="prevCard()" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <span id="cardCounter">1 / {{ flashcards|length }}</span>
+            <button onclick="nextCard()" class="btn btn-secondary">
+                Next <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        
+        <div class="flashcard-viewer">
+            {% for card in flashcards %}
+            <div class="flashcard" data-index="{{ loop.index0 }}" {% if loop.index0 != 0 %}style="display:none;"{% endif %}>
+                <div class="flashcard-inner" onclick="flipCard(this)">
+                    <div class="flashcard-front">
+                        <h4>Question</h4>
+                        <p>{{ card.question }}</p>
+                        <small>Click to reveal answer</small>
+                    </div>
+                    <div class="flashcard-back">
+                        <h4>Answer</h4>
+                        <p>{{ card.answer }}</p>
+                        <small>Click to see question</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentCard = 0;
+const totalCards = {{ flashcards|length if flashcards else 0 }};
+
+function showCard(index) {
+    document.querySelectorAll('.flashcard').forEach((card, i) => {
+        card.style.display = i === index ? 'block' : 'none';
+    });
+    document.getElementById('cardCounter').textContent = `${index + 1} / ${totalCards}`;
+}
+
+function nextCard() {
+    currentCard = (currentCard + 1) % totalCards;
+    showCard(currentCard);
+}
+
+function prevCard() {
+    currentCard = (currentCard - 1 + totalCards) % totalCards;
+    showCard(currentCard);
+}
+
+function flipCard(card) {
+    card.classList.toggle('flipped');
+}
+</script>
+{% endblock %}

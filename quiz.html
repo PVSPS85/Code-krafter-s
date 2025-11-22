@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Quiz Yourself{% endblock %}
+{% block content %}
+<style>
+.flashcard-box {
+  perspective: 900px;
+  margin: 38px auto 12px;
+  max-width: 420px;
+}
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  min-height: 160px;
+  border-radius: 20px;
+  box-shadow: 0 6px 32px #0099cc23;
+  background: var(--bg-white);
+  transition: transform 0.7s cubic-bezier(.48,.06,.56,1.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  padding: 36px 32px 30px;
+  font-size: 1.09rem;
+  color: var(--text-dark);
+  border: 2px solid var(--primary-light);
+}
+
+.flashcard-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard-front {
+  position: relative;
+  z-index: 2;
+}
+
+.flashcard-back {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border-radius: 20px;
+  background: var(--primary);
+  color: #fff;
+  padding: 36px 32px 30px;
+  font-size: 1.09rem;
+  display: flex; align-items: center; justify-content: center;
+  transform: rotateY(180deg);
+  box-shadow: 0 3px 22px #21808D2a;
+}
+#flip-btn {
+  margin: 24px auto 8px;
+  display: block;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 500;
+  padding: 9px 36px;
+  border-radius:12px;
+  font-size:1.04rem;
+  cursor:pointer;
+  transition: background .19s;
+}
+#flip-btn:hover { background: var(--primary-light); }
+.quiz-progress {
+  color: var(--primary); font-size:.98rem; margin-bottom:8px; font-weight:600;
+}
+</style>
+<div style="padding-bottom:36px;">
+  <h2 style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:1.34rem;">
+    <i class="fas fa-question-circle" style="color:#0099cc;font-size:2rem;"></i>
+    Interactive Quiz
+  </h2>
+  {% if question %}
+    <div class="quiz-progress">Q{{ idx+1 if idx!=None else "" }}/{{ total }}</div>
+    <div class="flashcard-box">
+      <div class="flashcard-inner" id="flipper">
+        <div class="flashcard-front">
+          <strong style="color:var(--primary);font-size:1.09rem;display:block;margin-bottom:12px;"><i class="fas fa-lightbulb"></i> Quiz Question</strong>
+          <p style="font-size: 1.18rem;">{{ question }}</p>
+        </div>
+        <div class="flashcard-back">
+          <strong style="font-size:1.09rem;margin-bottom:12px;display:block;"><i class="fas fa-check-circle"></i> Answer</strong>
+          <p style="font-size: 1.2rem;">{{ answer }}</p>
+        </div>
+      </div>
+    </div>
+    <button id="flip-btn">Show Answer</button>
+    <a href="{{ url_for('quiz') }}" style="text-decoration:none;color:var(--primary);font-weight:600;display:inline-block;margin-top:14px;">➔ Next Question</a>
+  {% else %}
+    <div style="padding:34px 20px;background:var(--bg-light);border-radius:18px;">
+      <strong style="color:var(--danger);display:flex;align-items:center;gap:9px;font-size:1.12rem;"><i class="fas fa-exclamation-circle"></i> No flashcards found</strong>
+      <p style="color:#888;margin-top:8px;">Add some flashcards for quiz mode.</p>
+    </div>
+  {% endif %}
+</div>
+<script>
+  // Card flip animation
+  const flipBtn = document.getElementById('flip-btn');
+  const flipper = document.getElementById('flipper');
+  if(flipBtn && flipper){
+    flipBtn.onclick = function(){
+      flipper.classList.toggle('flipped');
+      flipBtn.innerText = flipper.classList.contains('flipped') ? "Hide Answer" : "Show Answer";
+    };
+  }
+</script>
+{% endblock %}

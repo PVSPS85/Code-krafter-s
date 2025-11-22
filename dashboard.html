@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CreazyAI{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="dashboard">
+    <div class="welcome-section">
+        <h2>Welcome back, {{ user.name }}! 👋</h2>
+        <p>Ready to supercharge your study session?</p>
+    </div>
+    
+    <div class="grid grid-4">
+        <div class="stat-card">
+            <div class="icon">📝</div>
+            <div class="value">{{ user.stats.notes_count }}</div>
+            <div class="label">Notes Summarized</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="icon">🎴</div>
+            <div class="value">{{ user.stats.flashcards_count }}</div>
+            <div class="label">Flashcards Created</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="icon">⏱️</div>
+            <div class="value">{{ user.stats.study_time }}min</div>
+            <div class="label">Study Time Today</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="icon">🔥</div>
+            <div class="value">{{ user.stats.streak }} days</div>
+            <div class="label">Study Streak</div>
+        </div>
+    </div>
+    
+    <div class="grid grid-2 mt-3">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Quick Actions</h3>
+            </div>
+            <div class="card-body">
+                <div class="quick-actions">
+                    <a href="/summarizer" class="action-btn">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Summarize Notes</span>
+                    </a>
+                    <a href="/flashcards" class="action-btn">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Create Flashcards</span>
+                    </a>
+                    <a href="/key-terms" class="action-btn">
+                        <i class="fas fa-key"></i>
+                        <span>Extract Key Terms</span>
+                    </a>
+                    <a href="/timetable" class="action-btn">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>View Timetable</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Activity</h3>
+            </div>
+            <div class="card-body">
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <i class="fas fa-file-alt"></i>
+                        <div>
+                            <strong>Note Summarized</strong>
+                            <small>2 hours ago</small>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <i class="fas fa-layer-group"></i>
+                        <div>
+                            <strong>5 Flashcards Created</strong>
+                            <small>5 hours ago</small>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <i class="fas fa-check"></i>
+                        <div>
+                            <strong>Study Session Completed</strong>
+                            <small>Yesterday</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

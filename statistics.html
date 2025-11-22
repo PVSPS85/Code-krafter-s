@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics - CreazyAI{% endblock %}
+{% block page_title %}Study Statistics{% endblock %}
+
+{% block content %}
+<div class="statistics-page">
+    <div class="grid grid-4">
+        <div class="stat-card">
+            <div class="icon">📝</div>
+            <div class="value">{{ stats.notes_count }}</div>
+            <div class="label">Total Notes</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="icon">🎴</div>
+            <div class="value">{{ stats.flashcards_count }}</div>
+            <div class="label">Flashcards Created</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="icon">⏱️</div>
+            <div class="value">{{ stats.study_time }}min</div>
+            <div class="label">Study Time</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="icon">🔥</div>
+            <div class="value">{{ stats.streak }} days</div>
+            <div class="label">Study Streak</div>
+        </div>
+    </div>
+    
+    <div class="grid grid-2 mt-3">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Study Progress</h3>
+            </div>
+            <div class="card-body">
+                <div class="progress-item">
+                    <span>Notes Summarized</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ (stats.notes_count / 50 * 100) if stats.notes_count < 50 else 100 }}%"></div>
+                    </div>
+                    <span>{{ stats.notes_count }} / 50</span>
+                </div>
+                
+                <div class="progress-item">
+                    <span>Flashcards Created</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ (stats.flashcards_count / 100 * 100) if stats.flashcards_count < 100 else 100 }}%"></div>
+                    </div>
+                    <span>{{ stats.flashcards_count }} / 100</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Achievements</h3>
+            </div>
+            <div class="card-body">
+                <div class="achievements-grid">
+                    <div class="achievement {% if stats.notes_count >= 1 %}unlocked{% endif %}">
+                        <div class="achievement-icon">🎯</div>
+                        <div class="achievement-name">First Note</div>
+                    </div>
+                    <div class="achievement {% if stats.streak >= 3 %}unlocked{% endif %}">
+                        <div class="achievement-icon">🔥</div>
+                        <div class="achievement-name">3-Day Streak</div>
+                    </div>
+                    <div class="achievement {% if stats.flashcards_count >= 10 %}unlocked{% endif %}">
+                        <div class="achievement-icon">🎴</div>
+                        <div class="achievement-name">Card Master</div>
+                    </div>
+                    <div class="achievement {% if stats.study_time >= 60 %}unlocked{% endif %}">
+                        <div class="achievement-icon">⏰</div>
+                        <div class="achievement-name">Study Hour</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

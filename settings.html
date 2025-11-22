@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - CreazyAI{% endblock %}
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+<div class="settings-page">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Profile Settings</h3>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" class="form-control" value="{{ user.name }}" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" value="{{ session.user }}" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="college">College/University</label>
+                    <input type="text" id="college" class="form-control" value="{{ user.college }}" placeholder="Enter your college name">
+                </div>
+                
+                <button type="button" class="btn btn-primary" onclick="alert('Profile update feature coming soon!')">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">About CreazyAI</h3>
+        </div>
+        <div class="card-body">
+            <p><strong>Version:</strong> 1.0.0</p>
+            <p><strong>Developed by:</strong> Your Team</p>
+            <p><strong>Powered by:</strong> Google Gemini AI</p>
+            <p><strong>Technologies:</strong> Flask, Python, HTML, CSS, JavaScript</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

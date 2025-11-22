@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Resources{% endblock %}
+{% block content %}
+<div style="padding: 32px; max-width: 700px; margin:auto;">
+    <h2>📁 Upload & Manage Resources</h2>
+    {% if msg %}<div class="alert alert-success">{{ msg }}</div>{% endif %}
+    <form method="post" enctype="multipart/form-data" style="margin-bottom:16px;">
+        <label>Select file:</label>
+        <input type="file" name="file" required>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+    <h3>Uploaded Files</h3>
+    <ul>
+        {% for f in files %}
+        <li>{{ f }}</li>
+        {% else %}
+        <li>No files yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

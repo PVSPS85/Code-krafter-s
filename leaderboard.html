@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Leaderboard{% endblock %}
+{% block content %}
+<div style="padding:32px;max-width:650px;margin:auto;">
+    <h2 style="font-size:2.2rem; font-weight:800; display: flex; align-items: center; gap: 12px;">
+        <i class="fas fa-trophy" style="color: #f4c542; font-size: 2.6rem;"></i>
+        Leaderboard
+    </h2>
+    <p style="color: var(--text-light); margin-bottom:24px;">Top study streaks (demo data for now):</p>
+    
+    <div style="margin-bottom: 28px;">
+        <table style="width:100%; border-spacing:0 12px; text-align:left;">
+            <thead>
+                <tr style="background: var(--primary); color: white;">
+                    <th style="padding: 12px 18px; border-radius:10px 0 0 10px;">Rank</th>
+                    <th style="padding: 12px 8px;">User</th>
+                    <th style="padding: 12px 8px;">Streak 🔥</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for name, score in top_users %}
+                <tr style="background: var(--bg-white); box-shadow: 0 2px 8px 0 rgba(0,0,0,0.09); font-size: 1.11rem;">
+                    <td style="padding: 12px 18px; font-weight:700; color: #ffb400;">
+                        <span style="font-size:1.25rem;">{{ loop.index }}</span>
+                    </td>
+                    <td style="padding: 12px 8px; font-weight:600;">{{ name }}</td>
+                    <td style="padding: 12px 8px;">
+                        <span style="background: var(--primary-light); color: #fff; border-radius: 20px; padding: 4px 16px; font-weight:700; font-size:1rem; box-shadow:0 2px 5px #00bcd43d;">
+                            {{ score }}
+                        </span>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p style="color:#aaa;">Live dynamic leaderboard in upcoming versions!</p>
+</div>
+{% endblock %}

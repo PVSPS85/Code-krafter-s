@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block standalone_content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - CreazyAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>📚 CreazyAI</h1>
+                <p>Your AI-Powered Study Assistant</p>
+            </div>
+            
+            <form method="POST" class="auth-form">
+                <h2>Create Account</h2>
+                
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="John Doe" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="your.email@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full-width">Sign Up</button>
+                
+                <p class="auth-footer">
+                    Already have an account? <a href="/login">Login</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

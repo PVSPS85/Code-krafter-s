@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Key Terms - CreazyAI{% endblock %}
+{% block page_title %}Key Terms Extractor{% endblock %}
+
+{% block content %}
+<div class="key-terms-page">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Extract Key Terms</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="text">Paste Your Study Material</label>
+                    <textarea id="text" name="text" class="form-control" rows="8" placeholder="Paste your notes or textbook content here..." required></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-key"></i> Extract Key Terms
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    {% if terms %}
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">Key Terms ({{ terms|length }})</h3>
+        </div>
+        <div class="card-body">
+            <div class="terms-grid">
+                {% for term in terms %}
+                <div class="term-card">
+                    <h4>{{ term.term }}</h4>
+                    <p>{{ term.definition }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

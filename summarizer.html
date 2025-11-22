@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Note Summarizer - CreazyAI{% endblock %}
+{% block page_title %}Note Summarizer{% endblock %}
+
+{% block content %}
+<div class="summarizer-page">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Upload Your Notes</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="file-upload">
+                        <input type="file" name="file" accept=".pdf,.txt" onchange="showFileName(this)">
+                        <div class="upload-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload or drag and drop</p>
+                            <small>PDF or TXT files only</small>
+                            <p class="file-name" id="fileName"></p>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="divider">OR</div>
+                
+                <div class="form-group">
+                    <label for="text">Paste Your Text</label>
+                    <textarea id="text" name="text" class="form-control" rows="8" placeholder="Paste your notes here..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-magic"></i> Summarize with AI
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    {% if summary %}
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">Summary Results</h3>
+        </div>
+        <div class="card-body">
+            <div class="stats-row">
+                <div class="stat-item">
+                    <span class="stat-label">Original Words:</span>
+                    <span class="stat-value">{{ original_words }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Summary Words:</span>
+                    <span class="stat-value">{{ summary_words }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Reduction:</span>
+                    <span class="stat-value">{{ reduction }}%</span>
+                </div>
+            </div>
+            
+            <div class="summary-box">
+                <h4>Summary:</h4>
+                <p>{{ summary }}</p>
+            </div>
+            
+            <div class="action-buttons">
+                <button onclick="copySummary()" class="btn btn-secondary">
+                    <i class="fas fa-copy"></i> Copy Summary
+                </button>
+                <button onclick="window.print()" class="btn btn-secondary">
+                    <i class="fas fa-print"></i> Print
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showFileName(input) {
+    const fileName = input.files[0]?.name;
+    if (fileName) {
+        document.getElementById('fileName').textContent = '📄 ' + fileName;
+    }
+}
+
+function copySummary() {
+    const summary = document.querySelector('.summary-box p').textContent;
+    navigator.clipboard.writeText(summary).then(() => {
+        alert('Summary copied to clipboard!');
+    });
+}
+</script>
+{% endblock %}

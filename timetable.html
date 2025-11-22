@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title %}Timetable{% endblock %}
+{% block page_title %}Timetable{% endblock %}
+{% block content %}
+
+<style>
+.timetable-container {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.timetable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.timetable th {
+    background: #2c7a7b;
+    color: white;
+    padding: 14px 10px;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid #226e6f;
+}
+.timetable td {
+    padding: 16px 12px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+    transition: background 0.2s;
+    cursor: pointer;
+    position: relative;
+}
+.timetable td:hover {
+    background: #f7fafc;
+}
+.timetable td.time-column {
+    background: #edf2f7;
+    font-weight: 600;
+    color: #2d3748;
+}
+.timetable td input {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #4299e1;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+    outline: none;
+}
+.edit-mode {
+    background: #ebf8ff !important;
+    border: 2px solid #4299e1 !important;
+}
+.save-btn {
+    margin-top: 20px;
+    padding: 10px 24px;
+    background: #2c7a7b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+}
+.save-btn:hover {
+    background: #226e6f;
+}
+.info-box {
+    background: #e6fffa;
+    border-left: 4px solid #2c7a7b;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    color: #234e52;
+}
+</style>
+
+<div class="page-container">
+    <div class="page-header">
+        <h2>📅 My Timetable</h2>
+        <p>Click any cell to edit the subject or time</p>
+    </div>
+
+    <div class="timetable-container">
+        <div class="info-box">
+            💡 <strong>Tip:</strong> Click on any subject or time to edit. Changes save automatically when you click outside the cell.
+        </div>
+
+        <table class="timetable" id="timetable">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="time-column" contenteditable="true" data-original="">9:00 - 10:00</td>
+                    <td contenteditable="true" data-original="">Math</td>
+                    <td contenteditable="true" data-original="">Physics</td>
+                    <td contenteditable="true" data-original="">Chemistry</td>
+                    <td contenteditable="true" data-original="">Math</td>
+                    <td contenteditable="true" data-original="">English</td>
+                    <td contenteditable="true" data-original="">Lab</td>
+                </tr>
+                <tr>
+                    <td class="time-column" contenteditable="true" data-original="">10:00 - 11:00</td>
+                    <td contenteditable="true" data-original="">Physics</td>
+                    <td contenteditable="true" data-original="">Math</td>
+                    <td contenteditable="true" data-original="">English</td>
+                    <td contenteditable="true" data-original="">Chemistry</td>
+                    <td contenteditable="true" data-original="">Biology</td>
+                    <td contenteditable="true" data-original="">Sports</td>
+                </tr>
+                <tr>
+                    <td class="time-column" contenteditable="true" data-original="">11:00 - 12:00</td>
+                    <td contenteditable="true" data-original="">English</td>
+                    <td contenteditable="true" data-original="">Chemistry</td>
+                    <td contenteditable="true" data-original="">Math</td>
+                    <td contenteditable="true" data-original="">Physics</td>
+                    <td contenteditable="true" data-original="">History</td>
+                    <td contenteditable="true" data-original="">Free</td>
+                </tr>
+                <tr>
+                    <td class="time-column" style="background: #fef5e7; font-weight: bold;">12:00 - 1:00</td>
+                    <td colspan="6" style="background: #fef5e7; font-weight: bold;">🍽️ Lunch Break</td>
+                </tr>
+                <tr>
+                    <td class="time-column" contenteditable="true" data-original="">1:00 - 2:00</td>
+                    <td contenteditable="true" data-original="">Biology</td>
+                    <td contenteditable="true" data-original="">English</td>
+                    <td contenteditable="true" data-original="">Physics</td>
+                    <td contenteditable="true" data-original="">History</td>
+                    <td contenteditable="true" data-original="">Math</td>
+                    <td contenteditable="true" data-original="">Club</td>
+                </tr>
+                <tr>
+                    <td class="time-column" contenteditable="true" data-original="">2:00 - 3:00</td>
+                    <td contenteditable="true" data-original="">Chemistry</td>
+                    <td contenteditable="true" data-original="">Biology</td>
+                    <td contenteditable="true" data-original="">History</td>
+                    <td contenteditable="true" data-original="">English</td>
+                    <td contenteditable="true" data-original="">Free</td>
+                    <td contenteditable="true" data-original="">Free</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="save-btn" onclick="saveTimetable()">💾 Save Timetable</button>
+    </div>
+</div>
+
+<script>
+// Load saved timetable from localStorage on page load
+window.addEventListener('load', function() {
+    const saved = localStorage.getItem('timetable');
+    if (saved) {
+        const data = JSON.parse(saved);
+        const cells = document.querySelectorAll('#timetable td[contenteditable="true"]');
+        cells.forEach((cell, index) => {
+            if (data[index]) {
+                cell.textContent = data[index];
+            }
+        });
+    }
+});
+
+// Save timetable to localStorage
+function saveTimetable() {
+    const cells = document.querySelectorAll('#timetable td[contenteditable="true"]');
+    const data = [];
+    cells.forEach(cell => {
+        data.push(cell.textContent.trim());
+    });
+    localStorage.setItem('timetable', JSON.stringify(data));
+    
+    // Visual feedback
+    const btn = event.target;
+    const originalText = btn.textContent;
+    btn.textContent = '✅ Saved!';
+    btn.style.background = '#38a169';
+    setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = '';
+    }, 2000);
+}
+
+// Highlight cell when editing
+document.querySelectorAll('#timetable td[contenteditable="true"]').forEach(cell => {
+    cell.addEventListener('focus', function() {
+        this.classList.add('edit-mode');
+    });
+    cell.addEventListener('blur', function() {
+        this.classList.remove('edit-mode');
+        // Auto-save on blur
+        saveTimetable();
+    });
+});
+</script>
+
+{% endblock %}
